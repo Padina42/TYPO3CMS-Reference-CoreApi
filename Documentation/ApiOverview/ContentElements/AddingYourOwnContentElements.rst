@@ -155,7 +155,7 @@ This API call will register the file :file:`Configuration/TypoScript/setup.typos
 The definitions inside this file will be effective when the file is loaded.
 
 As Fluid templates, partials and layouts will be shipped in the custom extension,
-paths for them need to be added to the file.
+paths for them need to be added to the file. You should minimise the conflicts with other extensions by using typposcript constants.
 Therefore adjust the properties:
 
 * :ref:`t3tsref:cobj-fluidtemplate-properties-templaterootpaths`,
@@ -164,12 +164,29 @@ Therefore adjust the properties:
 
 .. code-block:: typoscript
 
-   lib.contentElement {
-       templateRootPaths.200 = EXT:your_extension_key/Resources/Private/Templates/
-       partialRootPaths.200 = EXT:your_extension_key/Resources/Private/Partials/
-       layoutRootPaths.200 = EXT:your_extension_key/Resources/Private/Layout/
+   plugin.your_plugin {
+       # cat=plugin.your_plugin//config; type=int; label=key in templatepathes of lib.contentElement
+       pathSlotNumber = 200
+       templateRootPath = EXT:your_extension_key/Resources/Private/Templates/
+       partialRootPath = EXT:your_extension_key/Resources/Private/Partials/
+       layoutRootPath = EXT:your_extension_key/Resources/Private/Layout/
 
    }
+
+.. code-block:: typoscript
+
+   lib.contentElement {
+       templateRootPaths {
+           {$plugin.your_plugin.pathSlotNumber} = {$plugin.your_plugin.templateRootPath}
+       }
+       partialRootPaths{
+           {$plugin.your_plugin.pathSlotNumber} = {$plugin.your_plugin.partialRootPath}
+       }
+       layoutRootPaths{
+           {$plugin.your_plugin.pathSlotNumber} = {$plugin.your_plugin.layoutRootPath}
+       }
+   }
+
 
 .. note::
 
