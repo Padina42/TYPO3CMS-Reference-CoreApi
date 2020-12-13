@@ -151,6 +151,63 @@ Steps to Perform (Extension Developer)
    from within a :ref:`Fluid template <read-flexforms-fluid>`.
 
 
+Flexform with tabs and own CSH-files 
+====================================
+
+The main-file defines two tabs for flexform in the example. The tab called timer and general in the example. 
+
+.. code-block:: xml
+
+   <T3DataStructure>
+      <meta type="array">
+         <langChildren>0</langChildren>
+         <langDisable>1</langDisable>
+      </meta>
+      <sheets>
+         <timer>EXT:my-ext/Configuration/FlexForms/Def/Specific/Daily.flexform</timer>
+         <general>EXT:my-mxt/Configuration/FlexForms/Def/General/General.flexform</general>
+       </sheets>
+   </T3DataStructure>
+
+The file with the sheet-definition beginn directly twith the `ROOT`-Tag in the `T3DataStructure`-Tag nand not with a name like `sDEF` for the sheet. The `sheetTitel` represents the title of he tab. The `sheetDescription`-tag allows a general description for all field in the tab-sheet.
+Each sheet can have its own csh-file (csh = Context-Sensitive-Help)
+
+.. code-block:: xml
+
+   <T3DataStructure>
+       <ROOT>
+           <TCEforms>
+               <sheetTitle>
+                   LLL:EXT:my-ext/Resources/Private/Language/locallang_flex.xlf:flexform.timer.txTimerGeneral.sheet.title
+               </sheetTitle>
+               <sheetDescription>
+                   LLL:EXT:my-ext/Resources/Private/Language/locallang_flex.xlf:flexform.timer.txTimerGeneral.sheet.description
+               </sheetDescription>
+               <cshFile>LLL:EXT:my-ext/Resources/Private/Language/FlexForms/locallang_csh_generaltimer.xlf</cshFile>
+           </TCEforms>
+           <type>array</type>
+           <el>
+               <useTimeZoneOfFrontend>
+                   <!-- ... normal definition of flexforms -->
+               </useTimeZoneOfFrontend>
+           </el>
+       </ROOT>
+   </T3DataStructure>
+
+Each sheet can contain its own csh-File. But you hae to declare the csh-file in ```ext_tables.php```. 
+In the example the csh-file ```locallang_csh_dailytimer.xlf``` of the sheet ```general``` is declared for the field ```tx_timer_timer``` in the table ```tx_timer_doamin_model_listing```. The field ```tx_timer_timer``` is from type ```flex``` and the decared ```ds_pointerfield``` in the flexconfiguration must contains the value ```txTimerDaily```.    
+The second declaration defines the chs-file for the second tab.
+
+.. code-block:: php
+
+  // used in ext_table.php
+  \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
+      'tx_timer_doamin_model_listing.tx_timer_timer.txTimerDaily',
+      'EXT:timer/Resources/Private/Language/FlexForms/locallang_csh_generaltimer.xlf');
+  \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
+      'tx_timer_doamin_model_listing.tx_timer_timer.txTimerDaily',
+      'EXT:my-ext/Resources/Private/Language/FlexForms/locallang_csh_dailytimer.xlf');
+
 More Examples
 =============
 
